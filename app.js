@@ -123,7 +123,7 @@ function getRandomImages() {
 setupListeners();
 getRandomImages();
 
-/////////////////////////////////////////////////////////
+///////////// table creation function below ///////////////////////////////////////
 
 var ctx = document.getElementById('myChart').getContext('2d');
 
@@ -151,7 +151,7 @@ function chartCreation(){
         {
           label: 'Number of times Displayed',
           data: displayTimes,
-          backgroundColor: '#F781BE',
+          backgroundColor: '#F8E0E6',
         }
       ]
     },

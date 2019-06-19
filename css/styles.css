@@ -4,20 +4,22 @@ li {
   margin: 2px; 
   padding: 2px; 
   height: 30%; 
+  position: relative;
   float: left; 
 } 
 
 img {
-  height: auto;
-  width: 150px;
+  object-fit: contain;
+  height: 200px;
+  width: 200px;
   border: 5px dotted black; 
   margin: 50px;
   padding: 50px; 
 }
 
 canvas {
-  background: lightgrey;
-  border: solid black 2px;
+  background: white;
+  border: solid white 2px;
   display: block; 
   margin: auto; 
   bottom: 5px;
