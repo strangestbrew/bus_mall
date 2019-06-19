@@ -15,3 +15,11 @@ img {
   padding: 50px; 
 }
 
+canvas {
+  background: lightgrey;
+  border: solid black 2px;
+  display: block; 
+  margin: auto; 
+  bottom: 5px;
+}
+

@@ -35,11 +35,9 @@ new ImageAnalytics('Slither', './images/usb.gif');
 new ImageAnalytics('Not Useless at ALL', './images/water-can.jpg');
 new ImageAnalytics('Stylish', './images/wine-glass.jpg');
 
-
 function setupListeners() {
   var imageContainer = document.getElementById('images');
   imageContainer.addEventListener('click', handleClick);
-  imageContainer.addEventListener('click', screamAndShout);
 }
 
 function removeListeners() {
@@ -47,28 +45,34 @@ function removeListeners() {
   imageContainer.removeEventListener('click', handleClick);
 }
 
-
-function screamAndShout() {
-  console.log("OUCH");
-}
-
 function getRandomNumber() {
   return Math.floor(Math.random() * ImageAnalytics.imageDatabase.length);
 }
 
+//handle click function
 function handleClick(event) {
+
+  //cycles over the array imageAnalytics.imageDatabase
   for (var i = 0; i < ImageAnalytics.imageDatabase.length; i++) {
+
+    //increases click incrementer with each cycle thru
     if (ImageAnalytics.imageDatabase[i].name === event.target.alt) {
       ImageAnalytics.imageDatabase[i].clicked++;
+
       clicksThisSession++;
+      // if clicks this session (incremented) = max allowed, stop
       if (clicksThisSession === maxClicksAllowed) {
         removeListeners();
+        chartCreation();
       }
+      console.log(clicksThisSession);
+      //break
       break;
     }
   }
   getRandomImages();
 }
+
 
 function getRandomImages() {
 
@@ -96,12 +100,12 @@ function getRandomImages() {
       // If it hsan't been previously showwn and its not on screen ...
       if (!previousSetOfImages.includes(randomNumber) && !currentSetOfImages.includes(randomNumber)) {
 
-        // Update it's displayed count
-        ImageAnalytics.imageDatabase[randomNumber].displayed++;
-
         // Render it
         image.src = ImageAnalytics.imageDatabase[randomNumber].filepath;
         image.alt = ImageAnalytics.imageDatabase[randomNumber].name;
+
+        // Update it's displayed count
+        ImageAnalytics.imageDatabase[randomNumber].displayed++;
 
         // Add it to my list of seen images
         currentSetOfImages.push(randomNumber);
@@ -109,15 +113,61 @@ function getRandomImages() {
         // Bug out
         ok = true;
       }
-
     }
   }
-
   previousSetOfImages = currentSetOfImages;
-
 }
 
 /// Create Images
 // createImages(); //
 setupListeners();
 getRandomImages();
+
+/////////////////////////////////////////////////////////
+
+var ctx = document.getElementById('myChart').getContext('2d');
+
+function chartCreation(){
+  var labels = []; //"Banana Slicer", "Bathroom Screen", etc etc
+  var clickTimes = []; //our clicks
+  var displayTimes = []; //times displayed
+
+  for (var i = 0; i < ImageAnalytics.imageDatabase.length; i++){
+    labels.push(ImageAnalytics.imageDatabase[i].name);
+    clickTimes.push(ImageAnalytics.imageDatabase[i].clicked);
+    displayTimes.push(ImageAnalytics.imageDatabase[i].displayed);
+  }
+
+  var myChart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Number of times Clicked',
+          data: clickTimes,
+          backgroundColor: '#F5A9E1',
+        },
+        {
+          label: 'Number of times Displayed',
+          data: displayTimes,
+          backgroundColor: '#F781BE',
+        }
+      ]
+    },
+    options: {
+      responsive: false,
+      mantainAspectRatio: true,
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true
+            }
+          }
+        ]
+      }
+    }
+  });
+}
+
