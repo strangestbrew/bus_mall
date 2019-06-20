@@ -4,6 +4,7 @@ var maxClicksAllowed = 25;
 var clicksThisSession = 0;
 var previousSetOfImages = [];
 
+
 function ImageAnalytics(name, filepath) {
   this.name = name;
   this.filepath = filepath;
@@ -13,52 +14,33 @@ function ImageAnalytics(name, filepath) {
 }
 ImageAnalytics.imageDatabase = [];
 
-ImageAnalytics.prototype.move = function () {
-  var makeStringy = JSON.stringify(clickData);
-  localStorage.setItem('clickData', makeStringy);
-}
+//instances
+new ImageAnalytics('R2D2 Bag', 'images/bag.jpg');
+new ImageAnalytics('Banana Slicer', 'images/banana.jpg');
+new ImageAnalytics('Bathroom Screen', './images/bathroom.jpg');
+new ImageAnalytics('Yellow Boots', './images/boots.jpg');
+new ImageAnalytics('Breakfast Toaster', './images/breakfast.jpg');
+new ImageAnalytics('Delicious Meatball Gum, Yum!', './images/bubblegum.jpg');
+new ImageAnalytics('Gorgeous Red Chair', './images/chair.jpg');
+new ImageAnalytics('Cthulhu Eats a Guy!', './images/cthulhu.jpg');
+new ImageAnalytics('Duck Dog Muzzle', './images/dog-duck.jpg');
+new ImageAnalytics('YUMMY dragon meat', './images/dragon.jpg');
+new ImageAnalytics('Office Cutlery', './images/pen.jpg');
+new ImageAnalytics('Doggie Housework Helper', './images/pet-sweep.jpg');
+new ImageAnalytics('Pizza Slicer', './images/scissors.jpg');
+new ImageAnalytics('Sleep With the Fishes', './images/shark.jpg');
+new ImageAnalytics('Put Baby to WORK', './images/sweep.png');
+new ImageAnalytics('Smells Worse Inside', './images/tauntaun.jpg');
+new ImageAnalytics('You\'re a Monster if You Eat This', './images/unicorn.jpg');
+new ImageAnalytics('Slither', './images/usb.gif');
+new ImageAnalytics('Not Useless at ALL', './images/water-can.jpg');
+new ImageAnalytics('Stylish', './images/wine-glass.jpg');
 
-function initializeSystem() {
-  //is there click data in local storage?
-  
-  var clickData = {};
-  var lsData = localStorage.getItem('clickData');
-
-  if (lsData) {
-    console.log('data exists');
-    //data will be a JSON string, must parse
-
-  
- //instances
-  new ImageAnalytics('R2D2 Bag', 'images/bag.jpg');
-  new ImageAnalytics('Banana Slicer', 'images/banana.jpg');
-  new ImageAnalytics('Bathroom Screen', './images/bathroom.jpg');
-  new ImageAnalytics('Yellow Boots', './images/boots.jpg');
-  new ImageAnalytics('Breakfast Toaster', './images/breakfast.jpg');
-  new ImageAnalytics('Delicious Meatball Gum, Yum!', './images/bubblegum.jpg');
-  new ImageAnalytics('Gorgeous Red Chair', './images/chair.jpg');
-  new ImageAnalytics('Cthulhu Eats a Guy!', './images/cthulhu.jpg');
-  new ImageAnalytics('Duck Dog Muzzle', './images/dog-duck.jpg');
-  new ImageAnalytics('YUMMY dragon meat', './images/dragon.jpg');
-  new ImageAnalytics('Office Cutlery', './images/pen.jpg');
-  new ImageAnalytics('Doggie Housework Helper', './images/pet-sweep.jpg');
-  new ImageAnalytics('Pizza Slicer', './images/scissors.jpg');
-  new ImageAnalytics('Sleep With the Fishes', './images/shark.jpg');
-  new ImageAnalytics('Put Baby to WORK', './images/sweep.png');
-  new ImageAnalytics('Smells Worse Inside', './images/tauntaun.jpg');
-  new ImageAnalytics('You\'re a Monster if You Eat This', './images/unicorn.jpg');
-  new ImageAnalytics('Slither', './images/usb.gif');
-  new ImageAnalytics('Not Useless at ALL', './images/water-can.jpg');
-  new ImageAnalytics('Stylish', './images/wine-glass.jpg');
-  
-  }
-}
 
 
 function setupListeners() {
   var imageContainer = document.getElementById('images');
   imageContainer.addEventListener('click', handleClick);
-  console.log(ImageAnalytics.imageDatabase);
 }
 
 function removeListeners() {
@@ -86,12 +68,13 @@ function handleClick(event) {
         removeListeners();
         chartCreation();
       }
-      console.log(clicksThisSession);
+      
       //break
       break;
     }
   }
   getRandomImages();
+  localStorage.setItem('busMallObject', JSON.stringify(ImageAnalytics.imageDatabase));
 }
 
 
@@ -146,6 +129,7 @@ setupListeners();
 getRandomImages();
 
 
+
 ///////////// table creation function below ///////////////////////////////////////
 
 var ctx = document.getElementById('myChart').getContext('2d');
@@ -155,10 +139,36 @@ function chartCreation(){
   var clickTimes = []; //our clicks
   var displayTimes = []; //times displayed
 
-  for (var i = 0; i < ImageAnalytics.imageDatabase.length; i++){
-    labels.push(ImageAnalytics.imageDatabase[i].name);
-    clickTimes.push(ImageAnalytics.imageDatabase[i].clicked);
-    displayTimes.push(ImageAnalytics.imageDatabase[i].displayed);
+  if (localStorage.clickTimes && localStorage.displayTimes) {
+    console.log('found it');
+    var clickTimesFromLocal = JSON.parse(localStorage.getItem('clickTimes'));
+    console.log(clickTimesFromLocal, 'clickTimesFromLocal');
+    var displayTimesFromLocal = JSON.parse(localStorage.getItem('displayTimes'));
+    console.log(displayTimesFromLocal,'displayTimesFromLocal');
+    for (var i = 0; i < clickTimesFromLocal.length; i++){
+      labels.push(ImageAnalytics.imageDatabase[i].name);
+      clickTimes.push(ImageAnalytics.imageDatabase[i].clicked);
+      displayTimes.push(ImageAnalytics.imageDatabase[i].displayed);
+    }
+    for (var j = 0; j < clickTimes.length; j++){
+      clickTimes[j] = clickTimes[j] + clickTimesFromLocal[j];
+      displayTimes[j] = displayTimes[j] + displayTimesFromLocal[j];
+    }
+    localStorage.setItem('clickTimes', JSON.stringify(clickTimes));
+    localStorage.setItem('displayTimes', JSON.stringify(displayTimes));
+  }
+
+  else {
+    console.log('nothing in local');
+    for (var k = 0; k < ImageAnalytics.imageDatabase.length; k++){
+      labels.push(ImageAnalytics.imageDatabase[k].name);
+      clickTimes.push(ImageAnalytics.imageDatabase[k].clicked);
+      displayTimes.push(ImageAnalytics.imageDatabase[k].displayed);
+    }
+
+    localStorage.setItem('clickTimes', JSON.stringify(clickTimes));
+   
+    localStorage.setItem('displayTimes', JSON.stringify(displayTimes));
   }
 
   var myChart = new Chart(ctx, {
