@@ -4,6 +4,7 @@ var maxClicksAllowed = 25;
 var clicksThisSession = 0;
 var previousSetOfImages = [];
 
+
 function ImageAnalytics(name, filepath) {
   this.name = name;
   this.filepath = filepath;
@@ -13,7 +14,7 @@ function ImageAnalytics(name, filepath) {
 }
 ImageAnalytics.imageDatabase = [];
 
-//CHANGE FILE PATH
+//instances
 new ImageAnalytics('R2D2 Bag', 'images/bag.jpg');
 new ImageAnalytics('Banana Slicer', 'images/banana.jpg');
 new ImageAnalytics('Bathroom Screen', './images/bathroom.jpg');
@@ -34,6 +35,8 @@ new ImageAnalytics('You\'re a Monster if You Eat This', './images/unicorn.jpg');
 new ImageAnalytics('Slither', './images/usb.gif');
 new ImageAnalytics('Not Useless at ALL', './images/water-can.jpg');
 new ImageAnalytics('Stylish', './images/wine-glass.jpg');
+
+
 
 function setupListeners() {
   var imageContainer = document.getElementById('images');
@@ -65,13 +68,15 @@ function handleClick(event) {
         removeListeners();
         chartCreation();
       }
-      console.log(clicksThisSession);
+      
       //break
       break;
     }
   }
   getRandomImages();
+  localStorage.setItem('busMallObject', JSON.stringify(ImageAnalytics.imageDatabase));
 }
+
 
 
 function getRandomImages() {
@@ -123,6 +128,8 @@ function getRandomImages() {
 setupListeners();
 getRandomImages();
 
+
+
 ///////////// table creation function below ///////////////////////////////////////
 
 var ctx = document.getElementById('myChart').getContext('2d');
@@ -132,10 +139,36 @@ function chartCreation(){
   var clickTimes = []; //our clicks
   var displayTimes = []; //times displayed
 
-  for (var i = 0; i < ImageAnalytics.imageDatabase.length; i++){
-    labels.push(ImageAnalytics.imageDatabase[i].name);
-    clickTimes.push(ImageAnalytics.imageDatabase[i].clicked);
-    displayTimes.push(ImageAnalytics.imageDatabase[i].displayed);
+  if (localStorage.clickTimes && localStorage.displayTimes) {
+    console.log('found it');
+    var clickTimesFromLocal = JSON.parse(localStorage.getItem('clickTimes'));
+    console.log(clickTimesFromLocal, 'clickTimesFromLocal');
+    var displayTimesFromLocal = JSON.parse(localStorage.getItem('displayTimes'));
+    console.log(displayTimesFromLocal,'displayTimesFromLocal');
+    for (var i = 0; i < clickTimesFromLocal.length; i++){
+      labels.push(ImageAnalytics.imageDatabase[i].name);
+      clickTimes.push(ImageAnalytics.imageDatabase[i].clicked);
+      displayTimes.push(ImageAnalytics.imageDatabase[i].displayed);
+    }
+    for (var j = 0; j < clickTimes.length; j++){
+      clickTimes[j] = clickTimes[j] + clickTimesFromLocal[j];
+      displayTimes[j] = displayTimes[j] + displayTimesFromLocal[j];
+    }
+    localStorage.setItem('clickTimes', JSON.stringify(clickTimes));
+    localStorage.setItem('displayTimes', JSON.stringify(displayTimes));
+  }
+
+  else {
+    console.log('nothing in local');
+    for (var k = 0; k < ImageAnalytics.imageDatabase.length; k++){
+      labels.push(ImageAnalytics.imageDatabase[k].name);
+      clickTimes.push(ImageAnalytics.imageDatabase[k].clicked);
+      displayTimes.push(ImageAnalytics.imageDatabase[k].displayed);
+    }
+
+    localStorage.setItem('clickTimes', JSON.stringify(clickTimes));
+   
+    localStorage.setItem('displayTimes', JSON.stringify(displayTimes));
   }
 
   var myChart = new Chart(ctx, {
@@ -170,7 +203,4 @@ function chartCreation(){
     }
   });
 }
-
-////////////////// local storage /////////////////////////////////////////////
-
 
