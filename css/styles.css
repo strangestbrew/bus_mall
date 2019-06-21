@@ -1,6 +1,26 @@
+body {
+  background: white;
+}
+
+header {
+  background: #008080; 
+  height: 55px; 
+  font-family: 'Courgette', cursive;
+  font-size: 45px; 
+  font-style: italic;
+}
+
+nav {
+  background: #808080;
+  height: 35px; 
+  font-size: 25px; 
+  font-family: 'Roboto Condensed', sans-serif;
+  text-align: right;
+
+}
+
 li {
   width: 30%;
-  border: 2px black solid; 
   margin: 2px; 
   padding: 2px; 
   height: 30%; 
@@ -9,10 +29,12 @@ li {
 } 
 
 img {
+  background: white; 
   object-fit: contain;
   height: 200px;
   width: 200px;
-  border: 5px dotted black; 
+  border: 5px solid gray; 
+  border-radius: 15px;
   margin: 50px;
   padding: 50px; 
 }

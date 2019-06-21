@@ -1,6 +1,6 @@
 'use strict';
 
-var maxClicksAllowed = 25;
+var maxClicksAllowed = 5;
 var clicksThisSession = 0;
 var previousSetOfImages = [];
 
@@ -172,19 +172,19 @@ function chartCreation(){
   }
 
   var myChart = new Chart(ctx, {
-    type: 'horizontalBar',
+    type: 'bar',
     data: {
       labels: labels,
       datasets: [
         {
           label: 'Number of times Clicked',
           data: clickTimes,
-          backgroundColor: '#F5A9E1',
+          backgroundColor: '#008080',
         },
         {
           label: 'Number of times Displayed',
           data: displayTimes,
-          backgroundColor: '#F8E0E6',
+          backgroundColor: '#808080',
         }
       ]
     },
